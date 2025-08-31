@@ -1,48 +1,59 @@
-"use client"
-import React, { useEffect, useRef, useState, useCallback } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
-import { useSidebar } from "../context/SidebarContext"
-import { BoxIcon, Calendar, ChevronDown, FlipHorizontal2Icon, GridIcon, List, PackagePlus, PieChart, PlugIcon, Table, UserCircle } from "lucide-react"
-
+"use client";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useSidebar } from "../context/SidebarContext";
+import {
+  BoxIcon,
+  Calendar,
+  ChevronDown,
+  FlipHorizontal2Icon,
+  GridIcon,
+  List,
+  PackagePlus,
+  PieChart,
+  PlugIcon,
+  Table,
+  UserCircle,
+} from "lucide-react";
 
 const navItems = [
   {
     icon: <GridIcon />,
-    name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }]
+    name: "Dashboard Kanban Forms",
+    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
   {
     icon: <Calendar />,
     name: "Calendar",
-    path: "/calendar"
+    path: "/calendar",
   },
   {
     icon: <UserCircle />,
     name: "User Profile",
-    path: "/profile"
+    path: "/profile",
   },
 
   {
     name: "Forms",
     icon: <List />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }]
+    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
   },
   {
     name: "Tables",
     icon: <Table />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }]
+    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
   {
     name: "Pages",
     icon: <PackagePlus />,
     subItems: [
       { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false }
-    ]
-  }
-]
+      { name: "404 Error", path: "/error-404", pro: false },
+    ],
+  },
+];
 
 const othersItems = [
   {
@@ -50,8 +61,8 @@ const othersItems = [
     name: "Charts",
     subItems: [
       { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false }
-    ]
+      { name: "Bar Chart", path: "/bar-chart", pro: false },
+    ],
   },
   {
     icon: <BoxIcon />,
@@ -62,22 +73,22 @@ const othersItems = [
       { name: "Badge", path: "/badge", pro: false },
       { name: "Buttons", path: "/buttons", pro: false },
       { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false }
-    ]
+      { name: "Videos", path: "/videos", pro: false },
+    ],
   },
   {
     icon: <PlugIcon />,
     name: "Authentication",
     subItems: [
       { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false }
-    ]
-  }
-]
+      { name: "Sign Up", path: "/signup", pro: false },
+    ],
+  },
+];
 
 const AppSidebar = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar()
-  const pathname = usePathname()
+  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const pathname = usePathname();
 
   const renderMenuItems = (navItems, menuType) => (
     <ul className="flex flex-col gap-4">
@@ -106,7 +117,17 @@ const AppSidebar = () => {
                 {nav.icon}
               </span>
               {(isExpanded || isHovered || isMobileOpen) && (
-                <span className={`menu-item-text`}>{nav.name}</span>
+                <span className="menu-item-text relative group">
+                  <span className="truncate max-w-[160px] block">
+                    {nav.name}
+                  </span>
+                  {/* Tooltip for long text */}
+                  {nav.name.length > 20 && (
+                    <span className="absolute left-0 top-full mt-1 w-max max-w-xs px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-md">
+                      {nav.name}
+                    </span>
+                  )}
+                </span>
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDown
@@ -144,19 +165,19 @@ const AppSidebar = () => {
           )}
           {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
             <div
-              ref={el => {
-                subMenuRefs.current[`${menuType}-${index}`] = el
+              ref={(el) => {
+                subMenuRefs.current[`${menuType}-${index}`] = el;
               }}
               className="overflow-hidden transition-all duration-300"
               style={{
                 height:
                   openSubmenu?.type === menuType && openSubmenu?.index === index
                     ? `${subMenuHeight[`${menuType}-${index}`]}px`
-                    : "0px"
+                    : "0px",
               }}
             >
               <ul className="mt-2 space-y-1 ml-9">
-                {nav.subItems.map(subItem => (
+                {nav.subItems.map((subItem) => (
                   <li key={subItem.name}>
                     <Link
                       href={subItem.path}
@@ -200,66 +221,66 @@ const AppSidebar = () => {
         </li>
       ))}
     </ul>
-  )
+  );
 
-  const [openSubmenu, setOpenSubmenu] = useState(null)
-  const [subMenuHeight, setSubMenuHeight] = useState({})
-  const subMenuRefs = useRef({})
+  const [openSubmenu, setOpenSubmenu] = useState(null);
+  const [subMenuHeight, setSubMenuHeight] = useState({});
+  const subMenuRefs = useRef({});
 
   // const isActive = (path: string) => path === pathname;
-  const isActive = useCallback(path => path === pathname, [pathname])
+  const isActive = useCallback((path) => path === pathname, [pathname]);
 
   useEffect(() => {
     // Check if the current path matches any submenu item
-    let submenuMatched = false
-    ;["main", "others"].forEach(menuType => {
-      const items = menuType === "main" ? navItems : othersItems
+    let submenuMatched = false;
+    ["main", "others"].forEach((menuType) => {
+      const items = menuType === "main" ? navItems : othersItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
-          nav.subItems.forEach(subItem => {
+          nav.subItems.forEach((subItem) => {
             if (isActive(subItem.path)) {
               setOpenSubmenu({
                 type: menuType,
-                index
-              })
-              submenuMatched = true
+                index,
+              });
+              submenuMatched = true;
             }
-          })
+          });
         }
-      })
-    })
+      });
+    });
 
     // If no submenu item matches, close the open submenu
     if (!submenuMatched) {
-      setOpenSubmenu(null)
+      setOpenSubmenu(null);
     }
-  }, [pathname, isActive])
+  }, [pathname, isActive]);
 
   useEffect(() => {
     // Set the height of the submenu items when the submenu is opened
     if (openSubmenu !== null) {
-      const key = `${openSubmenu.type}-${openSubmenu.index}`
+      const key = `${openSubmenu.type}-${openSubmenu.index}`;
       if (subMenuRefs.current[key]) {
-        setSubMenuHeight(prevHeights => ({
+        setSubMenuHeight((prevHeights) => ({
           ...prevHeights,
-          [key]: subMenuRefs.current[key]?.scrollHeight || 0
-        }))
+          [key]: subMenuRefs.current[key]?.scrollHeight || 0,
+        }));
       }
     }
-  }, [openSubmenu])
+  }, [openSubmenu]);
 
   const handleSubmenuToggle = (index, menuType) => {
-    setOpenSubmenu(prevOpenSubmenu => {
+    setOpenSubmenu((prevOpenSubmenu) => {
       if (
         prevOpenSubmenu &&
         prevOpenSubmenu.type === menuType &&
         prevOpenSubmenu.index === index
       ) {
-        return null
+        return null;
       }
-      return { type: menuType, index }
-    })
-  }
+      return { type: menuType, index };
+    });
+  };
 
   return (
     <aside
@@ -350,7 +371,7 @@ const AppSidebar = () => {
         {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
       </div>
     </aside>
-  )
-}
+  );
+};
 
-export default AppSidebar
+export default AppSidebar;
