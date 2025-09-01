@@ -10,24 +10,29 @@ import {
   ChevronDown,
   FlipHorizontal2Icon,
   GridIcon,
+  Kanban,
   List,
   PackagePlus,
   PieChart,
   PlugIcon,
+  Settings,
   Table,
   UserCircle,
 } from "lucide-react";
+import { Dropdown } from "../components/ui/dropdown/Dropdown";
+import { DropdownItem } from "../components/ui/dropdown/DropdownItem";
 
 const navItems = [
   {
     icon: <GridIcon />,
-    name: "Dashboard Kanban Forms",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    name: "Dashboard",
+    path: "/",
+    // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
   {
-    icon: <Calendar />,
-    name: "Calendar",
-    path: "/calendar",
+    icon: <Kanban />,
+    name: "Kanban",
+    path: "/kanban",
   },
   {
     icon: <UserCircle />,
@@ -64,18 +69,18 @@ const othersItems = [
       { name: "Bar Chart", path: "/bar-chart", pro: false },
     ],
   },
-  {
-    icon: <BoxIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
+  // {
+  //   icon: <BoxIcon />,
+  //   name: "UI Elements",
+  //   subItems: [
+  //     { name: "Alerts", path: "/alerts", pro: false },
+  //     { name: "Avatar", path: "/avatars", pro: false },
+  //     { name: "Badge", path: "/badge", pro: false },
+  //     { name: "Buttons", path: "/buttons", pro: false },
+  //     { name: "Images", path: "/images", pro: false },
+  //     { name: "Videos", path: "/videos", pro: false },
+  //   ],
+  // },
   {
     icon: <PlugIcon />,
     name: "Authentication",
@@ -117,17 +122,7 @@ const AppSidebar = () => {
                 {nav.icon}
               </span>
               {(isExpanded || isHovered || isMobileOpen) && (
-                <span className="menu-item-text relative group">
-                  <span className="truncate max-w-[160px] block">
-                    {nav.name}
-                  </span>
-                  {/* Tooltip for long text */}
-                  {nav.name.length > 20 && (
-                    <span className="absolute left-0 top-full mt-1 w-max max-w-xs px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-md">
-                      {nav.name}
-                    </span>
-                  )}
-                </span>
+                <span className={`menu-item-text`}>{nav.name}</span>
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDown
@@ -225,6 +220,9 @@ const AppSidebar = () => {
 
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [subMenuHeight, setSubMenuHeight] = useState({});
+  const settingsRef = useRef(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   const subMenuRefs = useRef({});
 
   // const isActive = (path: string) => path === pathname;
@@ -282,14 +280,21 @@ const AppSidebar = () => {
     });
   };
 
+  const toggleSettings = () => {
+    setIsSettingsOpen(!isSettingsOpen);
+  };
+    const closeSettings = () => {
+    setIsSettingsOpen(false);
+  };
+
   return (
     <aside
       className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${
           isExpanded || isMobileOpen
-            ? "w-[290px]"
+            ? "w-[260px]"
             : isHovered
-            ? "w-[290px]"
+            ? "w-[260px]"
             : "w-[90px]"
         }
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
@@ -307,14 +312,14 @@ const AppSidebar = () => {
             <>
               <Image
                 className="dark:hidden"
-                src="/images/logo/logo.svg"
+                src="https://www.truact.in/Truact_logo_reverse-01.png"
                 alt="Logo"
                 width={150}
                 height={40}
               />
               <Image
                 className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
+                src="https://www.truact.in/Truact_logo_reverse-01.png"
                 alt="Logo"
                 width={150}
                 height={40}
@@ -322,10 +327,10 @@ const AppSidebar = () => {
             </>
           ) : (
             <Image
-              src="/images/logo/logo-icon.svg"
+              src="https://www.truact.in/Truact_logo_reverse-01.png"
               alt="Logo"
-              width={32}
-              height={32}
+              width={28}
+              height={28}
             />
           )}
         </Link>
@@ -359,7 +364,7 @@ const AppSidebar = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
+                  ""
                 ) : (
                   <FlipHorizontal2Icon />
                 )}
@@ -369,6 +374,65 @@ const AppSidebar = () => {
           </div>
         </nav>
         {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
+      </div>
+      <div className="mt-auto py-4 border-t border-gray-200 dark:border-gray-800">
+        <div className="relative">
+          <button
+            onClick={toggleSettings}
+            className={`menu-item group dropdown-toggle w-full ${
+              isSettingsOpen ? "menu-item-active" : "menu-item-inactive"
+            } ${
+              !isExpanded && !isHovered
+                ? "lg:justify-center"
+                : "lg:justify-start"
+            }`}
+          >
+            <span
+              className={`${
+                isSettingsOpen
+                  ? "menu-item-icon-active"
+                  : "menu-item-icon-inactive"
+              }`}
+            >
+              <Settings className="w-5 h-5" />
+            </span>
+            {(isExpanded || isHovered || isMobileOpen) && (
+              <span className="menu-item-text">Settings</span>
+            )}
+            {(isExpanded || isHovered || isMobileOpen) && (
+              <ChevronDown
+                className={`ml-auto w-5 h-5 transition-transform duration-200 ${
+                  isSettingsOpen ? "rotate-180 text-brand-500" : ""
+                }`}
+              />
+            )}
+          </button>
+
+          <Dropdown
+            isOpen={isSettingsOpen}
+            onClose={closeSettings}
+            className="left-0 right-0 bottom-full mb-2 w-full"
+          >
+            <div className="py-1">
+              <DropdownItem
+                tag="a"
+                href="/account-settings"
+                onItemClick={closeSettings}
+                className="dark:text-gray-300 dark:hover:bg-gray-700"
+              >
+                Account Settings
+              </DropdownItem>
+              <DropdownItem
+                tag="a"
+                href="/profile-settings"
+                onItemClick={closeSettings}
+                className="dark:text-gray-300 dark:hover:bg-gray-700"
+              >
+                Profile Settings
+              </DropdownItem>
+            </div>
+          </Dropdown>
+        </div>
       </div>
     </aside>
   );
